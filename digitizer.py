@@ -137,4 +137,5 @@ for y in range(0, 9):
 			board[y, x] = 0
 	# add the row to our cell locations
 	cellLocs.append(row)
+
 print(board)
