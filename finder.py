@@ -1,5 +1,6 @@
 import pygame
 from queue import PriorityQueue
+import numpy as np
 
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
@@ -207,8 +208,10 @@ def get_clicked_pos(pos, rows, width):
 
     return row, col
 
-def main(win, width):
+def find_the_path(win, width, board):
     ROWS = 9
+
+    #print(board)
 
     grid = make_grid(ROWS, width)
 
@@ -217,17 +220,12 @@ def main(win, width):
 
     run = True
     started = False
+    print(board)
+    draw(win,grid, ROWS, width)
+    #add numpy itteration
+
     while run:
-        draw(win,grid, ROWS, width)
-        grid[0][0].make_barrier()
-        grid[2][1].make_barrier()
-        grid[3][3].make_barrier()
-        start = grid[2][3]
-        grid[2][3].make_start()
-        end = grid[0][3]
-        grid[0][3].make_end()
-        
-        
+
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
@@ -249,6 +247,5 @@ def main(win, width):
 
     pygame.quit()
 
-main(WIN, WIDTH)
 
 

@@ -5,6 +5,10 @@ import numpy as np
 import imutils
 import argparse
 import cv2
+from finder import find_the_path
+import pygame
+from queue import PriorityQueue
+
 def find_puzzle(image, debug=False):
 	# convert the image to grayscale and blur it slightly
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -15,9 +19,11 @@ def find_puzzle(image, debug=False):
 	thresh = cv2.bitwise_not(thresh)
 	# check to see if we are visualizing each step of the image
 	# processing pipeline (in this case, thresholding)
+	"""
 	if debug:
 		cv2.imshow("Puzzle Thresh", thresh)
 		cv2.waitKey(0)
+	"""
 # find contours in the thresholded image and sort them by size in
 	# descending order
 	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
@@ -43,6 +49,7 @@ def find_puzzle(image, debug=False):
 			"Try debugging your thresholding and contour steps."))
 	# check to see if we are visualizing the outline of the detected
 	# Sudoku puzzle
+	"""
 	if debug:
 		# draw the contour of the puzzle on the image and then display
 		# it to our screen for visualization/debugging purposes
@@ -50,21 +57,26 @@ def find_puzzle(image, debug=False):
 		cv2.drawContours(output, [puzzleCnt], -1, (0, 255, 0), 2)
 		cv2.imshow("Puzzle Outline", output)
 		cv2.waitKey(0)
-    	# apply a four point perspective transform to both the original
+	"""
+    # apply a four point perspective transform to both the original
 	# image and grayscale image to obtain a top-down bird's eye view
 	# of the puzzle
 	puzzle = four_point_transform(image, puzzleCnt.reshape(4, 2))
 	warped = four_point_transform(gray, puzzleCnt.reshape(4, 2))
 	# check to see if we are visualizing the perspective transform
+
+	"""
 	if debug:
 		# show the output warped image (again, for debugging purposes)
 		cv2.imshow("Puzzle Transform", puzzle)
 		cv2.waitKey(0)
+	"""
+
 	# return a 2-tuple of puzzle in both RGB and grayscale
 	return (puzzle, warped)
 
 
-def is_not_empty(cell, debug=True):
+def is_not_empty(cell, debug=False):
 	# apply automatic thresholding to the cell and then clear any
 	# connected borders that touch the border of the cell
 	thresh = cv2.threshold(cell, 0, 255,
@@ -72,9 +84,11 @@ def is_not_empty(cell, debug=True):
 	thresh = clear_border(thresh)
 
 	# check to see if we are visualizing the cell thresholding step
+	"""
 	if debug:
 		cv2.imshow("Cell Thresh", thresh)
 		cv2.waitKey(0)
+	"""
 
 	# find contours in the thresholded cell
 	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
@@ -107,7 +121,7 @@ def is_not_empty(cell, debug=True):
 		return None
 
 	digit = cv2.bitwise_and(thresh, thresh, mask=mask)
-	print("precent of " , percentFilled)
+
 	# check to see if we should visualize the masking step
 	if debug:
 		cv2.imshow("Digit", digit)
@@ -157,16 +171,19 @@ for y in range(0, 9):
 		# crop the cell from the warped transform image and then
 		# extract the digit from the cell
 		cell = warped[startY:endY, startX:endX]
-		digit = is_not_empty(cell, 0)
+		digit = is_not_empty(cell, False)
 
 		if digit == None:
 			board[x,y]=0
 		
 		elif digit == True:
-			print("location in outer array num ", y, " and in inner array num ",x, "\n\n")
+
 			board[x,y]=1
 			
 			
 	# add the row to our cell locations
 	cellLocs.append(row)
-print(board)
+
+WIDTH = 800
+WIN = pygame.display.set_mode((WIDTH, WIDTH))
+find_the_path(WIN, WIDTH, board)
