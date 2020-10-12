@@ -220,8 +220,26 @@ def find_the_path(win, width, board):
 
     run = True
     started = False
+
+    board = board.tolist()
     print(board)
+    start = grid[1][0]
+    start.make_start()
+    end = grid[7][8]
+    end.make_end()
+
+    #draw walls here
+    for i in range(len(board)):
+        for j in range(len(board)):
+            if board[i][j] == 1:
+                print("Wall on coordinate ",i,j)
+                grid[j][i].make_barrier()
+    
+
+
+
     draw(win,grid, ROWS, width)
+
     #add numpy itteration
 
     while run:
@@ -232,9 +250,8 @@ def find_the_path(win, width, board):
                 run = False
             
             if event.type == pygame.KEYDOWN:
-                print(start)
                 if event.key == pygame.K_SPACE and start and end:
-                    print("start")
+                    
                     for row in grid:
                         for spot in row:
                             spot.update_neighbors(grid)
