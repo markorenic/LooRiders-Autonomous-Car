@@ -64,7 +64,7 @@ def find_puzzle(image, debug=False):
 	return (puzzle, warped)
 
 
-def is_empty(cell, debug=True):
+def is_not_empty(cell, debug=True):
 	# apply automatic thresholding to the cell and then clear any
 	# connected borders that touch the border of the cell
 	thresh = cv2.threshold(cell, 0, 255,
@@ -81,11 +81,40 @@ def is_empty(cell, debug=True):
 		cv2.CHAIN_APPROX_SIMPLE)
 	cnts = imutils.grab_contours(cnts)
 
-	# if no contours were found than this is an empty cell
+	
+	# if no contours were found than this is an empty cell(black cell)
 	if len(cnts) == 0:
-		return True
-	else:
-		return False
+		return None
+
+
+	# otherwise, find the largest contour in the cell and create a
+	# mask for the contour
+	c = max(cnts, key=cv2.contourArea)
+	mask = np.zeros(thresh.shape, dtype="uint8")
+	cv2.drawContours(mask, [c], -1, 255, -1)
+
+
+	# compute the percentage of masked pixels relative to the total
+	# area of the image
+	(h, w) = thresh.shape
+	percentFilled = cv2.countNonZero(mask) / float(w * h)
+
+	# if less than 3% of the mask is filled then we are looking at
+	# noise and can safely ignore the contour
+	# it is a black cell
+	
+	if percentFilled < 0.03:
+		return None
+
+	digit = cv2.bitwise_and(thresh, thresh, mask=mask)
+	print("precent of " , percentFilled)
+	# check to see if we should visualize the masking step
+	if debug:
+		cv2.imshow("Digit", digit)
+		cv2.waitKey(0)
+
+	# it is a white cell
+	return True
 
 
 
@@ -128,13 +157,16 @@ for y in range(0, 9):
 		# crop the cell from the warped transform image and then
 		# extract the digit from the cell
 		cell = warped[startY:endY, startX:endX]
-		digit = is_empty(cell, 0)
+		digit = is_not_empty(cell, 0)
 
-		# verify that the digit is not empty
-		if digit == False:
-			board[y, x] = 1
-		else:
-			board[y, x] = 0
+		if digit == None:
+			board[x,y]=0
+		
+		elif digit == True:
+			print("location in outer array num ", y, " and in inner array num ",x, "\n\n")
+			board[x,y]=1
+			
+			
 	# add the row to our cell locations
 	cellLocs.append(row)
 print(board)
