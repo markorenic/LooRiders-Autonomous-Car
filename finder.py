@@ -19,6 +19,8 @@ DEEPPINK = (139,10,80)
 BLUEVIOLET = (138,43,226)
 YELLOW = (255,185,15)
 
+pathCordinates = []
+instructions = []
 
 class Spot:
     def __init__(self, row, col, width, total_rows):
@@ -102,9 +104,10 @@ def reconstruct_path(came_from, current, draw):
     while current in came_from:
         current = came_from[current]
         current.make_path()
+        #change the row and col if needed
         col = current.col
         row = current.row
-        print(col," ",row)
+        append_the_path_cordinates((col, row))
         draw()
 
 
@@ -211,6 +214,15 @@ def get_clicked_pos(pos, rows, width):
 
     return row, col
 
+def append_the_path_cordinates(cordinate):
+
+    pathCordinates.append(cordinate)
+    
+
+def return_the_path_cordinates():
+ 
+    return pathCordinates
+
 def find_the_path(win, width, board):
     ROWS = 9
 
@@ -225,7 +237,7 @@ def find_the_path(win, width, board):
     started = False
 
     board = board.tolist()
-    print(board)
+
 
     board = [[1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 1]]
     start = grid[1][0]
@@ -237,7 +249,6 @@ def find_the_path(win, width, board):
     for i in range(len(board)):
         for j in range(len(board)):
             if board[i][j] == 1:
-                print("Wall on coordinate ",i,j)
                 grid[j][i].make_barrier()
     
 
@@ -245,7 +256,6 @@ def find_the_path(win, width, board):
 
     draw(win,grid, ROWS, width)
 
-    #add numpy itteration
 
     while run:
 
@@ -265,9 +275,8 @@ def find_the_path(win, width, board):
                     else:
                         print("impossible")
                 
-            
-
+  
     pygame.quit()
-
+   
 
 
