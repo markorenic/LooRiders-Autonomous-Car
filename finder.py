@@ -102,6 +102,9 @@ def reconstruct_path(came_from, current, draw):
     while current in came_from:
         current = came_from[current]
         current.make_path()
+        col = current.col
+        row = current.row
+        print(col," ",row)
         draw()
 
 
@@ -223,6 +226,8 @@ def find_the_path(win, width, board):
 
     board = board.tolist()
     print(board)
+
+    board = [[1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 1]]
     start = grid[1][0]
     start.make_start()
     end = grid[7][8]
