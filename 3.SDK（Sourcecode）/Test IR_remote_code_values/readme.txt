@@ -1,0 +1,1 @@
+upload the code ,then open the IDE Serial Monitor. check the remote code.
