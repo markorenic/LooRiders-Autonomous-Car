@@ -238,8 +238,9 @@ def find_the_path(win, width, board):
 
     board = board.tolist()
 
-
+    """
     board = [[1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 1]]
+    """
     start = grid[1][0]
     start.make_start()
     end = grid[7][8]
@@ -249,7 +250,7 @@ def find_the_path(win, width, board):
     for i in range(len(board)):
         for j in range(len(board)):
             if board[i][j] == 1:
-                grid[j][i].make_barrier()
+                grid[i][j].make_barrier()
     
 
 
