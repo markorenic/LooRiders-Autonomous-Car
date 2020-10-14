@@ -193,4 +193,96 @@ reversed_path_list = return_the_path_cordinates()
 #ordered path of cordinates
 ordered_path_list = reversed_path_list[::-1]
 
+
+
+
+def find_directions(ordered_path_list):
+
+	counter = 0
+	directions = []
+	heading = "east"
+	while(counter < len(ordered_path_list)-1):
+
+		row1,col1 = ordered_path_list[counter]
+		row2,col2 = ordered_path_list[counter+1]
+		
+		
+
+		
+		if heading == "east":
+			if(row1==row2):
+				if(col2-col1==1):
+					directions.append("straight-east")
+					print("go straight on the east route for 1 block")
+					counter +=1
+			elif(col1==col2):
+				if(row2-row1==1):
+					directions.append("turn-right-to-south")
+					heading = "south"
+					print("turn south")
+
+				elif(row1-row2==1):
+					directions.append("turn-left-to-north")
+					heading = "north"
+					print("turn north")
+
+		elif heading == "west":
+			if(row1==row2):
+				if(col2-col1==1):
+					directions.append("straight-west")
+					print("go straight on the west route for 1 block")
+					counter +=1
+			elif(col1==col2):
+				if(row2-row1==1):
+					directions.append("turn-left-to-south")
+					heading = "south"
+					print("turn south")
+
+				elif(row1-row2==1):
+					directions.append("turn-right-to-north")
+					heading = "north"
+					print("turn north")
+
+		elif heading == "north":
+			if(col1==col2):
+				if(row2-row1==1):
+					directions.append("straight-north")
+					print("go straight on the north route for 1 block")
+					counter +=1
+
+			elif(row1==row2):
+
+				if(col2-col1==1):
+					directions.append("turn-right-to-east")
+					heading = "east"
+					print("turn east")
+
+				elif(col1-col2==1):
+					directions.append("turn-left-to-west")
+					heading = "west"
+					print("turn west")
+
+		elif heading == "south":
+			if(col1==col2):
+				if(row2-row1==1):
+					directions.append("straight-south")
+					print("go straight on the south route for 1 block")
+					counter +=1
+			elif(row1==row2):
+				if(col2-col1==1):
+					directions.append("turn-left-to-east")
+					heading = "east"
+					print("turn east")
+
+				elif(col1-col2==1):
+					directions.append("turn-right-to-west")
+					heading = "west"
+					print("turn west")
+
+
+	print(directions)	
+
+
 print(ordered_path_list)
+
+find_directions(ordered_path_list)
