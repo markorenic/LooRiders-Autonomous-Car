@@ -4,7 +4,7 @@ import numpy as np
 
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
-pygame.display.set_caption("Path Finding Algorithm")
+pygame.display.set_caption("A* Star Path Finding Algorithm")
 
 
 GREEN = (69,139,116)
@@ -21,6 +21,8 @@ YELLOW = (255,185,15)
 
 pathCoordinates = []
 
+
+# Spot attributes
 class Spot:
     def __init__(self, row, col, width, total_rows):
         self.row = row
@@ -99,16 +101,18 @@ def h(p1, p2):
 
     return abs(x1 - x2) + abs(y1 - y2)
 
+
+# Draws the path
 def reconstruct_path(came_from, current, draw):
     while current in came_from:
         current = came_from[current]
         current.make_path()
-        #change the row and col if needed
-        col, row = current.get_pos()
+        row, col = current.get_pos()
         append_the_path_coordinates((col, row))
         draw()
 
 
+# Runs the algorithm
 def algorithm(draw, grid, start, end):
     count = 0
     #open set to store open nodes
@@ -125,7 +129,7 @@ def algorithm(draw, grid, start, end):
     # calculate and set the f score for the start node
     f_score[start] = h(start.get_pos(), end.get_pos())
 
-    #
+    # adds the start position to open_set_hash 
     open_set_hash = {start}
 
     while not open_set.empty():
@@ -171,7 +175,7 @@ def algorithm(draw, grid, start, end):
     return False
 
 
-
+# Function to make a grid
 def make_grid(rows, width):
     grid = []
     gap = width // rows
@@ -183,7 +187,7 @@ def make_grid(rows, width):
 
     return grid
 
-
+# Draw the grid
 def draw_grid(win, rows, width):
     gap = width // rows
     for i in range(rows):
@@ -192,6 +196,7 @@ def draw_grid(win, rows, width):
             pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
 
+# Draw pygame grid with the blocks and the start and end points
 def draw(win, grid, rows, width):
     win.fill(WHITE)
 
@@ -203,26 +208,19 @@ def draw(win, grid, rows, width):
     pygame.display.update()
 
 
-def get_clicked_pos(pos, rows, width):
-    gap = width // rows
-    y, x = pos
-
-    row = y // gap
-    col = x //gap
-
-    return row, col
-
+# Appending the cells of the shortest path
 def append_the_path_coordinates(coordinate):
     pathCoordinates.append(coordinate)
     
 
+# Function to return the cordinates of the shortest ordered path
 def return_the_path_coordinates():
     return pathCoordinates
 
+
+# Main function to find the path
 def find_the_path(win, width, board):
     ROWS = 9
-
-    #print(board)
 
     grid = make_grid(ROWS, width)
 
@@ -234,7 +232,7 @@ def find_the_path(win, width, board):
 
     board = board.tolist()
 
-   
+    #intiate start and end points
     start = grid[1][0]
     start.make_start()
     end = grid[7][8]
