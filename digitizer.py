@@ -9,71 +9,58 @@ from finder import find_the_path, return_the_path_coordinates
 import pygame
 from queue import PriorityQueue
 
-def find_puzzle(image, debug=False):
-	# convert the image to grayscale and blur it slightly
-	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	blurred = cv2.GaussianBlur(gray, (7, 7), 3)
-    # apply adaptive thresholding and then invert the threshold map
-	thresh = cv2.adaptiveThreshold(blurred, 255,
-		cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+def find_map(image, debug=False):
+	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # convert the image to grayscale and blur it slightly
+	blurred = cv2.GaussianBlur(gray, (7, 7), 3)    # apply adaptive thresholding and then invert the threshold map
+	thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
 	thresh = cv2.bitwise_not(thresh)
-	# check to see if we are visualizing each step of the image
-	# processing pipeline (in this case, thresholding)
-	"""
 	if debug:
-		cv2.imshow("Puzzle Thresh", thresh)
+		cv2.imshow("map Thresh", thresh)
 		cv2.waitKey(0)
-	"""
-# find contours in the thresholded image and sort them by size in
-	# descending order
-	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-		cv2.CHAIN_APPROX_SIMPLE)
+    # find contours in the thresholded image and sort them by size in descending order
+	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	cnts = imutils.grab_contours(cnts)
 	cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
-	# initialize a contour that corresponds to the puzzle outline
-	puzzleCnt = None
-	# loop over the contours
-	for c in cnts:
-		# approximate the contour
-		peri = cv2.arcLength(c, True)
+	
+	mapCnt = None #contours for the map outline
+
+	for c in cnts: # loop over the contours
+		
+		peri = cv2.arcLength(c, True) # approximate the contour
 		approx = cv2.approxPolyDP(c, 0.02 * peri, True)
 		# if our approximated contour has four points, then we can
-		# assume we have found the outline of the puzzle
+		# assume we have found the outline of the map
 		if len(approx) == 4:
-			puzzleCnt = approx
+			mapCnt = approx
 			break
-	# if the puzzle contour is empty then our script could not find
-	# the outline of the Sudoku puzzle so raise an error
-	if puzzleCnt is None:
-		raise Exception(("Could not find Sudoku puzzle outline. "
+	# if the map contour is empty then our script could not find
+	# the outline of the  map so raise an error
+	if mapCnt is None:
+		raise Exception(("Could not find  map outline. "
 			"Try debugging your thresholding and contour steps."))
 	# check to see if we are visualizing the outline of the detected
-	# Sudoku puzzle
-	"""
+	#  map
 	if debug:
-		# draw the contour of the puzzle on the image and then display
+		# draw the contour of the map on the image and then display
 		# it to our screen for visualization/debugging purposes
 		output = image.copy()
-		cv2.drawContours(output, [puzzleCnt], -1, (0, 255, 0), 2)
-		cv2.imshow("Puzzle Outline", output)
+		cv2.drawContours(output, [mapCnt], -1, (0, 255, 0), 2)
+		cv2.imshow("map Outline", output)
 		cv2.waitKey(0)
-	"""
     # apply a four point perspective transform to both the original
 	# image and grayscale image to obtain a top-down bird's eye view
-	# of the puzzle
-	puzzle = four_point_transform(image, puzzleCnt.reshape(4, 2))
-	warped = four_point_transform(gray, puzzleCnt.reshape(4, 2))
+	# of the map
+	map = four_point_transform(image, mapCnt.reshape(4, 2))
+	warped = four_point_transform(gray, mapCnt.reshape(4, 2))
 	# check to see if we are visualizing the perspective transform
 
-	"""
 	if debug:
 		# show the output warped image (again, for debugging purposes)
-		cv2.imshow("Puzzle Transform", puzzle)
+		cv2.imshow("map Transform", map)
 		cv2.waitKey(0)
-	"""
 
-	# return a 2-tuple of puzzle in both RGB and grayscale
-	return (puzzle, warped)
+	# return a 2-tuple of map in both RGB and grayscale
+	return (map, warped)
 
 
 def is_not_empty(cell, debug=False):
@@ -84,11 +71,9 @@ def is_not_empty(cell, debug=False):
 	thresh = clear_border(thresh)
 
 	# check to see if we are visualizing the cell thresholding step
-	"""
 	if debug:
 		cv2.imshow("Cell Thresh", thresh)
 		cv2.waitKey(0)
-	"""
 
 	# find contours in the thresholded cell
 	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
@@ -117,7 +102,7 @@ def is_not_empty(cell, debug=False):
 	# noise and can safely ignore the contour
 	# it is a black cell
 	
-	if percentFilled < 0.03:
+	if percentFilled < 0.05:
 		return None
 
 	digit = cv2.bitwise_and(thresh, thresh, mask=mask)
@@ -131,18 +116,18 @@ def is_not_empty(cell, debug=False):
 	return True
 
 
-
+#main
 image = 'sample2.jpg'
 image = cv2.imread(image)
 image = imutils.resize(image, width=600)
 
-(puzzleImage, warped) = find_puzzle(image, 1)
+(mapImage, warped) = find_map(image, 1)
 
 
-# initialize our 9x9 sudoku board
+# initialize our 9x9  board
 board = np.zeros((9, 9), dtype="int")
 
-# a sudoku puzzle is a 9x9 grid (81 individual cells), so we can
+# a  map is a 9x9 grid (81 individual cells), so we can
 # infer the location of each cell by dividing the warped image
 # into a 9x9 grid
 stepX = warped.shape[1] // 9
@@ -183,6 +168,9 @@ for y in range(0, 9):
 			
 	# add the row to our cell locations
 	cellLocs.append(row)
+
+
+###########################################################
 
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
