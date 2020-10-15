@@ -120,7 +120,7 @@ def algorithm(draw, grid, start, end):
     came_from = {}
     # set g score as infinity for all of them
     g_score = {spot: float("inf") for row in grid for spot in row}
-     # set start node's g score as 0
+    # set start node's g score as 0
     g_score[start] = 0
     # set set f score as infinity for all of them
     f_score = {spot: float("inf") for row in grid for spot in row}
@@ -270,7 +270,7 @@ def find_the_path(win, width, board):
                         for spot in row:
                             spot.update_neighbors(grid)
                     if algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end):
-                        print("found a path, see the pruple line.")
+                        print("found a path, see the purple line.")
                     else:
                         print("impossible")
                 
