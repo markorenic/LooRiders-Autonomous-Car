@@ -19,8 +19,7 @@ DEEPPINK = (139,10,80)
 BLUEVIOLET = (138,43,226)
 YELLOW = (255,185,15)
 
-pathCordinates = []
-instructions = []
+pathCoordinates = []
 
 class Spot:
     def __init__(self, row, col, width, total_rows):
@@ -105,9 +104,8 @@ def reconstruct_path(came_from, current, draw):
         current = came_from[current]
         current.make_path()
         #change the row and col if needed
-        col = current.col
-        row = current.row
-        append_the_path_cordinates((col, row))
+        col, row = current.get_pos()
+        append_the_path_coordinates((col, row))
         draw()
 
 
@@ -214,14 +212,12 @@ def get_clicked_pos(pos, rows, width):
 
     return row, col
 
-def append_the_path_cordinates(cordinate):
-
-    pathCordinates.append(cordinate)
+def append_the_path_coordinates(coordinate):
+    pathCoordinates.append(coordinate)
     
 
-def return_the_path_cordinates():
- 
-    return pathCordinates
+def return_the_path_coordinates():
+    return pathCoordinates
 
 def find_the_path(win, width, board):
     ROWS = 9

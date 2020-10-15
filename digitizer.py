@@ -5,7 +5,7 @@ import numpy as np
 import imutils
 import argparse
 import cv2
-from finder import find_the_path, return_the_path_cordinates
+from finder import find_the_path, return_the_path_coordinates
 import pygame
 from queue import PriorityQueue
 
@@ -188,9 +188,9 @@ WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 find_the_path(WIN, WIDTH, board)
 
-reversed_path_list = return_the_path_cordinates()
+reversed_path_list = return_the_path_coordinates()
 
-#ordered path of cordinates
+#ordered path of coordinates
 ordered_path_list = reversed_path_list[::-1]
 
 
