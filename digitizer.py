@@ -82,46 +82,43 @@ def is_not_empty(cell, debug=False):
 
 	
 	# if no contours were found than this is an empty cell(black cell)
-	if len(cnts) == 0:
-		return None
+	if not (len(cnts) == 0):
+		# otherwise, find the largest contour in the cell and create a
+		# mask for the contour
+		c = max(cnts, key=cv2.contourArea)
+		mask = np.zeros(thresh.shape, dtype="uint8")
+		cv2.drawContours(mask, [c], -1, 255, -1)
 
 
-	# otherwise, find the largest contour in the cell and create a
-	# mask for the contour
-	c = max(cnts, key=cv2.contourArea)
-	mask = np.zeros(thresh.shape, dtype="uint8")
-	cv2.drawContours(mask, [c], -1, 255, -1)
+		# compute the percentage of masked pixels relative to the total
+		# area of the image
+		(h, w) = thresh.shape
+		percentFilled = cv2.countNonZero(mask) / float(w * h)
 
+		# if less than 3% of the mask is filled then we are looking at
+		# noise and can safely ignore the contour
+		# it is a black cell
+		
+		if percentFilled > 0.01:
+			return True
 
-	# compute the percentage of masked pixels relative to the total
-	# area of the image
-	(h, w) = thresh.shape
-	percentFilled = cv2.countNonZero(mask) / float(w * h)
+		digit = cv2.bitwise_and(thresh, thresh, mask=mask)
 
-	# if less than 3% of the mask is filled then we are looking at
-	# noise and can safely ignore the contour
-	# it is a black cell
-	
-	if percentFilled < 0.02:
-		return None
-
-	digit = cv2.bitwise_and(thresh, thresh, mask=mask)
-
-	# check to see if we should visualize the masking step
-	if debug:
-		cv2.imshow("Digit", digit)
-		cv2.waitKey(0)
+		# check to see if we should visualize the masking step
+		if debug:
+			cv2.imshow("Digit", digit)
+			cv2.waitKey(0)
 
 	# it is a white cell
-	return True
+	return None
 
 
 #main
-image = 'sample2.jpg'
+image = 'sample4.jpg'
 image = cv2.imread(image)
 image = imutils.resize(image, width=600)
 
-(mapImage, warped) = find_map(image, 1)
+(mapImage, warped) = find_map(image, 0)
 
 
 # initialize our 9x9  board
