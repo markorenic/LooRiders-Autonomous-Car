@@ -103,13 +103,19 @@ def h(p1, p2):
 
 
 # Draws the path
-def reconstruct_path(came_from, current, draw):
+def reconstruct_path(came_from, current, draw, end):
+    end.make_path()
+    end_row, end_col = end.get_pos()
+    append_the_path_coordinates((end_col, end_row))
+
     while current in came_from:
         current = came_from[current]
         current.make_path()
         row, col = current.get_pos()
         append_the_path_coordinates((col, row))
         draw()
+
+    
 
 
 # Runs the algorithm
@@ -145,9 +151,9 @@ def algorithm(draw, grid, start, end):
         # if target is found
         if current == end:
             # trace the shorest path way
-            reconstruct_path(came_from, end, draw)
-            end.make_end()
+            reconstruct_path(came_from, end, draw, end)
             return True
+            
         # loop through neighbours
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + 1
@@ -219,10 +225,10 @@ def return_the_path_coordinates():
 
 
 # Main function to find the path
-def find_the_path(win, width, board):
+def find_the_path(board):
     ROWS = 9
 
-    grid = make_grid(ROWS, width)
+    grid = make_grid(ROWS, WIDTH)
 
     start = None
     end = None
@@ -247,7 +253,7 @@ def find_the_path(win, width, board):
 
 
 
-    draw(win,grid, ROWS, width)
+    draw(WIN,grid, ROWS, WIDTH)
 
 
     while run:
@@ -263,7 +269,7 @@ def find_the_path(win, width, board):
                     for row in grid:
                         for spot in row:
                             spot.update_neighbors(grid)
-                    if algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end):
+                    if algorithm(lambda: draw(WIN, grid, ROWS, WIDTH), grid, start, end):
                         print("found a path, see the purple line.")
                     else:
                         print("impossible")
