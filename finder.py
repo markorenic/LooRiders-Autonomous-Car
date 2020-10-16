@@ -7,15 +7,15 @@ WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Star Path Finding Algorithm")
 
 
-GREEN = (69,139,116)
-BLUE = (154,192,205)
+GREEN = (66,136,116)
+BLUE = (154,162,205)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 PURPLE = (128, 0, 128)
 ORANGE = (255, 165, 0)
 GREY = (128, 128, 128)
-BROWN = (139,35,35)
-DEEPPINK = (139,10,80)
+BROWN = (136,35,35)
+DEEPPINK = (136,10,80)
 BLUEVIOLET = (138,43,226)
 YELLOW = (255,185,15)
 
@@ -226,7 +226,7 @@ def return_the_path_coordinates():
 
 # Main function to find the path
 def find_the_path(board):
-    ROWS = 9
+    ROWS = 6
 
     grid = make_grid(ROWS, WIDTH)
 
@@ -241,7 +241,7 @@ def find_the_path(board):
     #intiate start and end points
     start = grid[1][0]
     start.make_start()
-    end = grid[7][8]
+    end = grid[5][5]
     end.make_end()
 
     #draw walls here

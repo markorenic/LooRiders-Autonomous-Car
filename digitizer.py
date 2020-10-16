@@ -63,7 +63,7 @@ def find_map(image, debug=False):
 	return (map, warped)
 
 
-def is_not_empty(cell, debug=False):
+def is_not_empty(cell, debug=True):
 	# apply automatic thresholding to the cell and then clear any
 	# connected borders that touch the border of the cell
 	thresh = cv2.threshold(cell, 0, 255,
@@ -188,32 +188,32 @@ def find_directions(ordered_path_list):
 
 
 def main():
-	image = 'sample4.jpg'
+	image = '1.jpg'
 	image = cv2.imread(image)
 	image = imutils.resize(image, width=600)
 	
 	(mapImage, warped) = find_map(image, 0)
 	
-	# initialize our 9x9  board
+	# initialize our 6x6  board
 	
-	board = np.zeros((9, 9), dtype="int")
+	board = np.zeros((6, 6), dtype="int")
 
-	# a  map is a 9x9 grid (81 individual cells), so we can
+	# a  map is a 6x6 grid (81 individual cells), so we can
 	# infer the location of each cell by dividing the warped image
-	# into a 9x9 grid
-	stepX = warped.shape[1] // 9
-	stepY = warped.shape[0] // 9
+	# into a 6x6 grid
+	stepX = warped.shape[1] // 6
+	stepY = warped.shape[0] // 6
 
 	# initialize a list to store the (x, y)-coordinates of each cell
 	# location
 	cellLocs = []
 
 	# loop over the grid locations
-	for y in range(0, 9):
+	for y in range(0, 6):
 		# initialize the current list of cell locations
 		row = []
 
-		for x in range(0, 9):
+		for x in range(0, 6):
 			# compute the starting and ending (x, y)-coordinates of the
 			# current cell
 			startX = x * stepX
