@@ -99,7 +99,7 @@ def is_not_empty(cell, debug=False):
 		# noise and can safely ignore the contour
 		# it is a black cell
 		
-		if percentFilled > 0.01:
+		if percentFilled > 0.02:
 			return True
 
 		digit = cv2.bitwise_and(thresh, thresh, mask=mask)
@@ -113,147 +113,61 @@ def is_not_empty(cell, debug=False):
 	return None
 
 
-#main
-image = 'sample4.jpg'
-image = cv2.imread(image)
-image = imutils.resize(image, width=600)
+def process_image():
 
-(mapImage, warped) = find_map(image, 0)
+	image = 'sample4.jpg'
+	image = cv2.imread(image)
+	image = imutils.resize(image, width=600)
+
+	(mapImage, warped) = find_map(image, 0)
 
 
-# initialize our 9x9  board
-board = np.zeros((9, 9), dtype="int")
+	# initialize our 9x9  board
+	board = np.zeros((9, 9), dtype="int")
 
-# a  map is a 9x9 grid (81 individual cells), so we can
-# infer the location of each cell by dividing the warped image
-# into a 9x9 grid
-stepX = warped.shape[1] // 9
-stepY = warped.shape[0] // 9
+	# a  map is a 9x9 grid (81 individual cells), so we can
+	# infer the location of each cell by dividing the warped image
+	# into a 9x9 grid
+	stepX = warped.shape[1] // 9
+	stepY = warped.shape[0] // 9
 
-# initialize a list to store the (x, y)-coordinates of each cell
-# location
-cellLocs = []
+	# initialize a list to store the (x, y)-coordinates of each cell
+	# location
+	cellLocs = []
 
-# loop over the grid locations
-for y in range(0, 9):
-	# initialize the current list of cell locations
-	row = []
+	# loop over the grid locations
+	for y in range(0, 9):
+		# initialize the current list of cell locations
+		row = []
 
-	for x in range(0, 9):
-		# compute the starting and ending (x, y)-coordinates of the
-		# current cell
-		startX = x * stepX
-		startY = y * stepY
-		endX = (x + 1) * stepX
-		endY = (y + 1) * stepY
+		for x in range(0, 9):
+			# compute the starting and ending (x, y)-coordinates of the
+			# current cell
+			startX = x * stepX
+			startY = y * stepY
+			endX = (x + 1) * stepX
+			endY = (y + 1) * stepY
 
-		# add the (x, y)-coordinates to our cell locations list
-		row.append((startX, startY, endX, endY))
+			# add the (x, y)-coordinates to our cell locations list
+			row.append((startX, startY, endX, endY))
 
-		# crop the cell from the warped transform image and then
-		# extract the digit from the cell
-		cell = warped[startY:endY, startX:endX]
-		digit = is_not_empty(cell, False)
+			# crop the cell from the warped transform image and then
+			# extract the digit from the cell
+			cell = warped[startY:endY, startX:endX]
+			digit = is_not_empty(cell, False)
 
-		if digit == None:
-			board[x,y]=0
-		
-		elif digit == True:
-
-			board[x,y]=1
+			if digit == None:
+				board[x,y]=0
 			
-			
-	# add the row to our cell locations
-	cellLocs.append(row)
+			elif digit == True:
+
+				board[x,y]=1
+				
+				
+		# add the row to our cell locations
+		cellLocs.append(row)
+
+		return board
 
 
 
-find_the_path(board)
-
-reversed_path_list = return_the_path_coordinates()
-
-#ordered path of coordinates
-ordered_path_list = reversed_path_list[::-1]
-
-
-
-
-def find_directions(ordered_path_list):
-
-	counter = 0
-	directions = []
-	heading = "east"
-	while(counter < len(ordered_path_list)-1):
-
-		row1,col1 = ordered_path_list[counter]
-		row2,col2 = ordered_path_list[counter+1]
-		
-		
-
-		
-		if heading == "east":
-			if(row1==row2):
-				if(col2-col1==1):
-					directions.append("straight-east")
-					counter +=1
-
-			elif(col1==col2):
-				if(row2-row1==1):
-					directions.append("turn-right-to-south")
-					heading = "south"
-
-				elif(row1-row2==1):
-					directions.append("turn-left-to-north")
-					heading = "north"
-
-		elif heading == "west":
-			if(row1==row2):
-				if(col2-col1==1):
-					directions.append("straight-west")
-					counter +=1
-
-			elif(col1==col2):
-				if(row2-row1==1):
-					directions.append("turn-left-to-south")
-					heading = "south"
-
-
-				elif(row1-row2==1):
-					directions.append("turn-right-to-north")
-					heading = "north"
-
-		elif heading == "north":
-			if(col1==col2):
-				if(row2-row1==1):
-					directions.append("straight-north")
-					counter +=1
-
-			elif(row1==row2):
-
-				if(col2-col1==1):
-					directions.append("turn-right-to-east")
-					heading = "east"
-
-				elif(col1-col2==1):
-					directions.append("turn-left-to-west")
-					heading = "west"
-
-		elif heading == "south":
-			if(col1==col2):
-				if(row2-row1==1):
-					directions.append("straight-south")
-					counter +=1
-			elif(row1==row2):
-				if(col2-col1==1):
-					directions.append("turn-left-to-east")
-					heading = "east"
-
-				elif(col1-col2==1):
-					directions.append("turn-right-to-west")
-					heading = "west"
-
-
-	print(directions)	
-
-
-find_directions(ordered_path_list)
