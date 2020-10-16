@@ -30,7 +30,7 @@ void setup() {
   //begin serial communication
   Serial.begin(9600);
   analogWrite(enA, 80*1.5);
-  analogWrite(enB, 97*1.5);
+  analogWrite(enB, 95*1.5);
   delay(1000);
 }
 
@@ -68,7 +68,7 @@ void OneSpaceForward() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(380); 
+  delay(373); 
 
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
