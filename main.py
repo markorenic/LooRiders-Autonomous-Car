@@ -1,102 +1,48 @@
 # import the necessary packages
-from imutils.perspective import four_point_transform
-from skimage.segmentation import clear_border
-import numpy as np
-import imutils
-import argparse
-import cv2
-from finder import find_the_path, return_the_path_coordinates
-from digitizer import process_image
-import pygame
-from queue import PriorityQueue
+from digitizer import *
+from finder import *
+import os
 
 
-def find_directions(ordered_path_list):
+#send instrustions array
+def updatePath(instructions):
+    file_ = open("firmware.ino", "r")
+    message = ""
+    for row in file_:
+        if ("loop()" not in row):
+            print(row)
+            message = message + row
+        else:
+            break
+    file_.close()
 
-    counter = 0
-    directions = []
-    heading = "east"
-    print("process started")
+    file_ = open("firmware.ino", "w")
+    message = message + "void loop(){"
 
-    while(counter < len(ordered_path_list)-1):
+    #instructions
+    instructions_code = ""
+    for instruction in instructions:
+        if instruction == "left":
+            instructions_code = instructions_code + " NinetyLeft();"
+        if instruction == "right":
+            instructions_code = instructions_code + " NinetyRight();"        
+        if instruction == "forward":
+            instructions_code = instructions_code + " OneSpaceForward();"
 
-		row1, col1 = ordered_path_list[counter]
-		row2, col2 = ordered_path_list[counter+1]
-		
-		if heading == "east":
-			if(row1 == row2):
-				if(col2-col1 == 1):
-					directions.append("straight-east")
-					counter += 1
+    #instructions end
 
-			elif(col1 == col2):
-				if(row2-row1 == 1):
-					directions.append("turn-right-to-south")
-					heading = "south"
-
-				elif(row1-row2 == 1):
-					directions.append("turn-left-to-north")
-					heading = "north"
-
-		elif heading == "west":
-			if(row1 == row2):
-				if(col2-col1 == 1):
-					directions.append("straight-west")
-					counter += 1
-
-			elif(col1 == col2):
-				if(row2-row1 == 1):
-					directions.append("turn-left-to-south")
-					heading = "south"
-
-				elif(row1-row2 == 1):
-					directions.append("turn-right-to-north")
-					heading = "north"
-
-		elif heading == "north":
-			if(col1 == col2):
-				if(row2-row1 == 1):
-					directions.append("straight-north")
-					counter += 1
-
-			elif(row1 == row2):
-
-				if(col2-col1 == 1):
-					directions.append("turn-right-to-east")
-					heading = "east"
-
-				elif(col1-col2 == 1):
-					directions.append("turn-left-to-west")
-					heading = "west"
-
-		elif heading == "south":
-			if(col1 == col2):
-				if(row2-row1 == 1):
-					directions.append("straight-south")
-					counter += 1
-			elif(row1 == row2):
-				if(col2-col1 == 1):
-					directions.append("turn-left-to-east")
-					heading = "east"
-
-				elif(col1-col2 == 1):
-					directions.append("turn-right-to-west")
-					heading = "west"
-
-
-	print(directions)	
-
+    message  = message + instructions_code + " return;}"
+    file_.write(message)
+    file_.close()
 
 
 board = process_image()
 
-find_the_path(board)
+directions = find_the_path(board)
 
-reversed_path_list = return_the_path_coordinates()
+print(directions)
 
-# ordered path of coordinates
-ordered_path_list = reversed_path_list[::-1]
+updatePath(directions)
 
-print(ordered_path_list)
 
-find_directions(ordered_path_list)
+

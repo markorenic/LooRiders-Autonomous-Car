@@ -5,7 +5,6 @@ import numpy as np
 import imutils
 import argparse
 import cv2
-from finder import find_the_path, return_the_path_coordinates
 import pygame
 from queue import PriorityQueue
 
@@ -115,7 +114,7 @@ def is_not_empty(cell, debug=False):
 
 def process_image():
 
-	image = 'sample4.jpg'
+	image = 'actual_pic.jpg'
 	image = cv2.imread(image)
 	image = imutils.resize(image, width=600)
 
@@ -123,24 +122,24 @@ def process_image():
 
 
 	# initialize our 9x9  board
-	board = np.zeros((9, 9), dtype="int")
+	board = np.zeros((6, 6), dtype="int")
 
 	# a  map is a 9x9 grid (81 individual cells), so we can
 	# infer the location of each cell by dividing the warped image
 	# into a 9x9 grid
-	stepX = warped.shape[1] // 9
-	stepY = warped.shape[0] // 9
+	stepX = warped.shape[1] // 6
+	stepY = warped.shape[0] // 6
 
 	# initialize a list to store the (x, y)-coordinates of each cell
 	# location
 	cellLocs = []
 
 	# loop over the grid locations
-	for y in range(0, 9):
+	for y in range(0, 6):
 		# initialize the current list of cell locations
 		row = []
 
-		for x in range(0, 9):
+		for x in range(0, 6):
 			# compute the starting and ending (x, y)-coordinates of the
 			# current cell
 			startX = x * stepX

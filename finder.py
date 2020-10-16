@@ -7,17 +7,17 @@ WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Star Path Finding Algorithm")
 
 
-GREEN = (69,139,116)
-BLUE = (154,192,205)
+GREEN = (69, 139, 116)
+BLUE = (154, 192, 205)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 PURPLE = (128, 0, 128)
 ORANGE = (255, 165, 0)
 GREY = (128, 128, 128)
-BROWN = (139,35,35)
-DEEPPINK = (139,10,80)
-BLUEVIOLET = (138,43,226)
-YELLOW = (255,185,15)
+BROWN = (139, 35, 35)
+DEEPPINK = (139, 10, 80)
+BLUEVIOLET = (138, 43, 226)
+YELLOW = (255, 185, 15)
 
 pathCoordinates = []
 
@@ -74,22 +74,24 @@ class Spot:
         self.color = BLUE
 
     def draw(self, win):
-        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
+        pygame.draw.rect(
+            win, self.color, (self.x, self.y, self.width, self.width))
 
     def update_neighbors(self, grid):
         self.neighbors = []
-        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier(): # DOWN
+        # DOWN
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():
             self.neighbors.append(grid[self.row + 1][self.col])
 
-        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier(): # UP
+        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():  # UP
             self.neighbors.append(grid[self.row - 1][self.col])
 
-        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier(): # RIGHT
+        # RIGHT
+        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():
             self.neighbors.append(grid[self.row][self.col + 1])
 
-        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier(): # LEFT
+        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():  # LEFT
             self.neighbors.append(grid[self.row][self.col - 1])
-
 
     def __lt__(self, other):
         return False
@@ -115,13 +117,11 @@ def reconstruct_path(came_from, current, draw, end):
         append_the_path_coordinates((col, row))
         draw()
 
-    
-
 
 # Runs the algorithm
 def algorithm(draw, grid, start, end):
     count = 0
-    #open set to store open nodes
+    # open set to store open nodes
     open_set = PriorityQueue()
     # Add start to the Open Set
     open_set.put((0, count, start))
@@ -135,7 +135,7 @@ def algorithm(draw, grid, start, end):
     # calculate and set the f score for the start node
     f_score[start] = h(start.get_pos(), end.get_pos())
 
-    # adds the start position to open_set_hash 
+    # adds the start position to open_set_hash
     open_set_hash = {start}
 
     while not open_set.empty():
@@ -153,7 +153,7 @@ def algorithm(draw, grid, start, end):
             # trace the shorest path way
             reconstruct_path(came_from, end, draw, end)
             return True
-            
+
         # loop through neighbours
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + 1
@@ -164,11 +164,12 @@ def algorithm(draw, grid, start, end):
                 # set the g score
                 g_score[neighbor] = temp_g_score
                 # set the f score
-                f_score[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
+                f_score[neighbor] = temp_g_score + \
+                    h(neighbor.get_pos(), end.get_pos())
                 # if the neighbor is not already green
                 if neighbor not in open_set_hash:
-                    #adds the neighbour to the set of green spots
-                    count +=1
+                    # adds the neighbour to the set of green spots
+                    count += 1
                     open_set.put((f_score[neighbor], count, neighbor))
                     open_set_hash.add(neighbor)
                     neighbor.make_open()
@@ -194,6 +195,8 @@ def make_grid(rows, width):
     return grid
 
 # Draw the grid
+
+
 def draw_grid(win, rows, width):
     gap = width // rows
     for i in range(rows):
@@ -217,16 +220,101 @@ def draw(win, grid, rows, width):
 # Appending the cells of the shortest path
 def append_the_path_coordinates(coordinate):
     pathCoordinates.append(coordinate)
-    
+
 
 # Function to return the cordinates of the shortest ordered path
 def return_the_path_coordinates():
     return pathCoordinates
 
 
+def find_directions(ordered_path_list):
+
+    counter = 0
+    directions = []
+    heading = "east"
+    reached_the_end = False
+
+    while(reached_the_end == False):
+
+        row1, col1 = ordered_path_list[counter]
+        row2, col2 = ordered_path_list[counter+1]
+
+        if heading == "east":
+            if(row1 == row2):
+                if(col2-col1 == 1):
+                    directions.append("forward")
+                    if(ordered_path_list[len(ordered_path_list)-1] == ordered_path_list[counter + 1]):
+                        reached_the_end = True
+                    counter += 1
+
+            elif(col1 == col2):
+                if(row2-row1 == 1):
+                    directions.append("right")
+                    heading = "south"
+
+                elif(row1-row2 == 1):
+                    directions.append("left")
+                    heading = "north"
+
+        elif heading == "west":
+            if(row1 == row2):
+                if(col1-col2 == 1):
+                    directions.append("forward")
+                    if(ordered_path_list[len(ordered_path_list)-1] == ordered_path_list[counter + 1]):
+                        reached_the_end = True
+                    counter += 1
+
+            elif(col1 == col2):
+                if(row2-row1 == 1):
+                    directions.append("left")
+                    heading = "south"
+
+                elif(row1-row2 == 1):
+                    directions.append("right")
+                    heading = "north"
+
+        elif heading == "north":
+            if(col1 == col2):
+                if(row2-row1 == 1):
+                    directions.append("forward")
+                    if(ordered_path_list[len(ordered_path_list)-1] == ordered_path_list[counter + 1]):
+                        reached_the_end = True
+                    counter += 1
+
+            elif(row1 == row2):
+
+                if(col2-col1 == 1):
+                    directions.append("right")
+                    heading = "east"
+
+                elif(col1-col2 == 1):
+                    directions.append("left")
+                    heading = "west"
+
+        elif heading == "south":
+            if(col1 == col2):
+                if(row2-row1 == 1):
+                    directions.append("forward")
+                    if(ordered_path_list[len(ordered_path_list)-1] == ordered_path_list[counter + 1]):
+                        reached_the_end = True
+                    counter += 1
+            elif(row1 == row2):
+                if(col2-col1 == 1):
+                    directions.append("left")
+                    heading = "east"
+
+                elif(col1-col2 == 1):
+                    directions.append("right")
+                    heading = "west"
+
+
+    return directions
+
+ #  return (directions)
+
 # Main function to find the path
 def find_the_path(board):
-    ROWS = 9
+    ROWS = 6
 
     grid = make_grid(ROWS, WIDTH)
 
@@ -238,23 +326,19 @@ def find_the_path(board):
 
     board = board.tolist()
 
-    #intiate start and end points
+    # intiate start and end points
     start = grid[1][0]
     start.make_start()
-    end = grid[7][8]
+    end = grid[4][5]
     end.make_end()
 
-    #draw walls here
+    # draw walls here
     for i in range(len(board)):
         for j in range(len(board)):
             if board[i][j] == 1:
                 grid[i][j].make_barrier()
-    
 
-
-
-    draw(WIN,grid, ROWS, WIDTH)
-
+    draw(WIN, grid, ROWS, WIDTH)
 
     while run:
 
@@ -262,10 +346,10 @@ def find_the_path(board):
 
             if event.type == pygame.QUIT:
                 run = False
-            
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and start and end:
-                    
+
                     for row in grid:
                         for spot in row:
                             spot.update_neighbors(grid)
@@ -273,9 +357,17 @@ def find_the_path(board):
                         print("found a path, see the purple line.")
                     else:
                         print("impossible")
-                
-  
-    pygame.quit()
-   
 
+    pygame.quit()
+
+    reversed_path_list = return_the_path_coordinates()
+
+    # ordered path of coordinates
+    ordered_path_list = reversed_path_list[::-1]
+
+    directions = find_directions(ordered_path_list)
+    
+    return directions
+
+    
 
