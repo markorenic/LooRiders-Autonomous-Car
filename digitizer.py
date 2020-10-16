@@ -167,7 +167,7 @@ def process_image():
 		# add the row to our cell locations
 		cellLocs.append(row)
 
-		return board
+	return board
 
 
 
