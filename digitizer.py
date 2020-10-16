@@ -114,7 +114,7 @@ def is_not_empty(cell, debug=False):
 
 def process_image():
 
-	image = 'sample2.jpg'
+	image = 'sample3.jpg'
 	image = cv2.imread(image)
 	image = imutils.resize(image, width=600)
 
