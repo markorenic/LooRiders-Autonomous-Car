@@ -40,7 +40,7 @@ void NinetyRight() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(165); 
+  delay(190); 
   
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
@@ -54,7 +54,7 @@ void NinetyLeft() {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(165);
+  delay(160);
 
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
@@ -68,7 +68,7 @@ void OneSpaceForward() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(500); 
+  delay(380); 
 
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
@@ -82,7 +82,7 @@ void OneSpaceReverse() {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(500);
+  delay(380);
 
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
@@ -116,4 +116,4 @@ void speedControl() {
   digitalWrite(in4, LOW);
 }
 
-void loop(){ OneSpaceForward(); NinetyRight(); OneSpaceForward(); NinetyLeft(); OneSpaceForward(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); return;}
+void loop(){ OneSpaceForward(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); NinetyLeft(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); OneSpaceForward(); while(1); return;}

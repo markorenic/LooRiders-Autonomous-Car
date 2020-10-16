@@ -114,11 +114,11 @@ def is_not_empty(cell, debug=False):
 
 def process_image():
 
-	image = 'actual_pic.jpg'
+	image = 'sample2.jpg'
 	image = cv2.imread(image)
 	image = imutils.resize(image, width=600)
 
-	(mapImage, warped) = find_map(image, 0)
+	(mapImage, warped) = find_map(image, 1)
 
 
 	# initialize our 9x9  board
