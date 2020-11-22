@@ -8,8 +8,11 @@ import cv2
 from finder import find_the_path, return_the_path_coordinates
 import pygame
 from queue import PriorityQueue
+import time
 
 def find_map(image, debug=False):
+
+
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # convert the image to grayscale and blur it slightly
 	blurred = cv2.GaussianBlur(gray, (7, 7), 3)    # apply adaptive thresholding and then invert the threshold map
 	thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
@@ -95,10 +98,12 @@ def is_not_empty(cell, debug=True):
 		(h, w) = thresh.shape
 		percentFilled = cv2.countNonZero(mask) / float(w * h)
 
-		# if less than 3% of the mask is filled then we are looking at
+		# if less than 1% of the mask is filled then we are looking at
 		# noise and can safely ignore the contour
 		# it is a black cell
 		
+
+
 		if percentFilled > 0.01:
 			return True
 
@@ -188,11 +193,11 @@ def find_directions(ordered_path_list):
 
 
 def main():
-	image = '1.jpg'
+	image = 'gren.jpg'
 	image = cv2.imread(image)
 	image = imutils.resize(image, width=600)
 	
-	(mapImage, warped) = find_map(image, 0)
+	(mapImage, warped) = find_map(image, True)
 	
 	# initialize our 6x6  board
 	
@@ -227,6 +232,7 @@ def main():
 			# crop the cell from the warped transform image and then
 			# extract the digit from the cell
 			cell = warped[startY:endY, startX:endX]
+			c_cell = mapImage[startY:endY, startX:endX]
 			digit = is_not_empty(cell, False)
 
 			if digit == None:
@@ -234,6 +240,50 @@ def main():
 
 			elif digit == True:
 				board[x, y] = 1
+			
+
+
+			image = c_cell
+
+			#red for ferrari
+			# define the list of boundaries //92,36,38
+			boundaries = [([0, 0, 80], [80, 86, 250])]
+			# loop over the boundaries
+			for (lower, upper) in boundaries:
+				# create NumPy arrays from the boundaries
+				lower = np.array(lower, dtype = "uint8")
+				upper = np.array(upper, dtype = "uint8")
+				# find the colors within the specified boundaries and apply
+				# the mask
+				mask = cv2.inRange(image, lower, upper)
+				(h, w) = mask.shape
+				percentFilled = cv2.countNonZero(mask) / float(w * h)
+				print(percentFilled)
+				if percentFilled>0.2:
+					board[x,y] = 3
+			
+			boundaries = [([0, 40, 0], [80,255,80])]
+
+			#green for finish
+			for (lower, upper) in boundaries:
+				# create NumPy arrays from the boundaries
+				lower = np.array(lower, dtype = "uint8")
+				upper = np.array(upper, dtype = "uint8")
+				# find the colors within the specified boundaries and apply
+				# the mask
+				mask = cv2.inRange(image, lower, upper)
+				(h, w) = mask.shape
+				percentFilled = cv2.countNonZero(mask) / float(w * h)
+				print(percentFilled)
+				if percentFilled>0.2:
+					board[x,y] = 4
+				#NEED TO FIX THE COLOR OF THE CAR AND THRESHOLD OTHER THAN THAT IT WORKS FINE
+				
+				# output = cv2.bitwise_and(image, image, mask = mask)
+				# #show the images
+				# cv2.imshow("images", np.hstack([image, output]))
+				# cv2.waitKey(0)
+			
 
 		# add the row to our cell locations
 		cellLocs.append(row)
