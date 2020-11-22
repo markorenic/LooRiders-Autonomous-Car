@@ -30,7 +30,7 @@ void setup() {
   //begin serial communication
   Serial.begin(9600);
   analogWrite(enA, 80*1.5);
-  analogWrite(enB, 95*1.5);
+  analogWrite(enB, 97*1.5);
   delay(1000);
 }
 
@@ -40,7 +40,7 @@ void NinetyRight() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(190); 
+  delay(165); 
   
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
@@ -54,7 +54,7 @@ void NinetyLeft() {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(160);
+  delay(165);
 
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
@@ -68,7 +68,7 @@ void OneSpaceForward() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(373); 
+  delay(500); 
 
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
@@ -82,7 +82,7 @@ void OneSpaceReverse() {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  delay(380);
+  delay(500);
 
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
@@ -116,4 +116,4 @@ void speedControl() {
   digitalWrite(in4, LOW);
 }
 
-void loop(){ OneSpaceForward(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); NinetyLeft(); OneSpaceForward(); while(1); return;}
+void loop(){ NinetyRight(); NinetyLeft(); OneSpaceForward(); return;}

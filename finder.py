@@ -11,13 +11,14 @@ GREEN = (69, 139, 116)
 BLUE = (154, 192, 205)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-PURPLE = (128, 0, 128)
+PURPLE = (153, 0, 153)
 ORANGE = (255, 165, 0)
 GREY = (128, 128, 128)
 BROWN = (139, 35, 35)
 DEEPPINK = (139, 10, 80)
 BLUEVIOLET = (138, 43, 226)
 YELLOW = (255, 185, 15)
+RED = (200,0,0)
 
 pathCoordinates = []
 
@@ -38,37 +39,37 @@ class Spot:
         return self.row, self.col
 
     def is_closed(self):
-        return self.color == DEEPPINK
+        return self.color == YELLOW
 
     def is_open(self):
-        return self.color == GREEN
+        return self.color == PURPLE
 
     def is_barrier(self):
         return self.color == BLACK
 
     def is_start(self):
-        return self.color == PURPLE
+        return self.color == RED
 
     def is_end(self):
-        return self.color == YELLOW
+        return self.color == GREEN
 
     def reset(self):
         self.color = WHITE
 
     def make_closed(self):
-        self.color = DEEPPINK
+        self.color = YELLOW
 
     def make_open(self):
-        self.color = GREEN
+        self.color = PURPLE
 
     def make_barrier(self):
         self.color = BLACK
 
     def make_start(self):
-        self.color = PURPLE
+        self.color = RED
 
     def make_end(self):
-        self.color = YELLOW
+        self.color = GREEN
 
     def make_path(self):
         self.color = BLUE
@@ -357,6 +358,7 @@ def find_the_path(board):
                         print("found a path, see the purple line.")
                     else:
                         print("impossible")
+
 
     pygame.quit()
 
