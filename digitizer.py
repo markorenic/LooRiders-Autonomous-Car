@@ -153,7 +153,7 @@ def process_image():
 			# crop the cell from the warped transform image and then
 			# extract the digit from the cell
 			cell = warped[startY:endY, startX:endX]
-			digit = is_not_empty(cell, False)
+			digit = is_not_empty(cell, True)
 
 			if digit == None:
 				board[x,y]=0
