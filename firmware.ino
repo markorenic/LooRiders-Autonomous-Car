@@ -116,4 +116,4 @@ void speedControl() {
   digitalWrite(in4, LOW);
 }
 
-void loop(){ OneSpaceForward(); OneSpaceForward(); NinetyLeft(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); OneSpaceForward(); NinetyLeft(); OneSpaceForward(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); return;}
+void loop(){ OneSpaceForward(); NinetyRight(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); NinetyRight(); OneSpaceForward(); NinetyLeft(); OneSpaceForward(); OneSpaceForward(); NinetyLeft(); OneSpaceForward(); OneSpaceForward(); OneSpaceForward(); return;}

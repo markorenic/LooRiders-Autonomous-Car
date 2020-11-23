@@ -118,7 +118,7 @@ def is_not_empty(cell, debug=False):
 
 def process_image():
 
-    image = 'map-pictures/55.jpg'
+    image = 'map-pictures/test2.jpg'
     image = cv2.imread(image)
     image = imutils.resize(image, width=600)
 
