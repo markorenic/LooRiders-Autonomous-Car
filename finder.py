@@ -328,9 +328,16 @@ def find_the_path(board):
     board = board.tolist()
 
     # intiate start and end points
-    start = grid[1][0]
+
+    for i in range(len(board)):
+        for j in range(len(board)):
+            if board[i][j] == 3:
+                start = grid[i][j]
     start.make_start()
-    end = grid[4][5]
+    for i in range(len(board)):
+        for j in range(len(board)):
+            if board[i][j] == 4:
+                end = grid[i][j]
     end.make_end()
 
     # draw walls here

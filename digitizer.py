@@ -118,7 +118,7 @@ def is_not_empty(cell, debug=False):
 
 def process_image():
 
-    image = 'map-pictures/sample3.jpg'
+    image = 'map-pictures/55.jpg'
     image = cv2.imread(image)
     image = imutils.resize(image, width=600)
 
@@ -156,6 +156,7 @@ def process_image():
             # crop the cell from the warped transform image and then
             # extract the cellColor from the cell
             cell = warped[startY:endY, startX:endX]
+            image = mapImage[startY:endY, startX:endX]
             cellColor = is_not_empty(cell, True)
 
             if cellColor == None:
@@ -164,6 +165,40 @@ def process_image():
             elif cellColor == True:
 
                 board[x, y] = 1
+
+            boundaries = [([0, 0, 80], [80, 86, 255])]
+
+            for (lower, upper) in boundaries:
+                lower = np.array(lower, dtype = "uint8")
+                upper = np.array(upper, dtype = "uint8")
+                mask = cv2.inRange(image, lower, upper)
+                (h, w) = mask.shape
+                percentFilled = cv2.countNonZero(mask) / float(w * h)
+                print(percentFilled)
+                # output = cv2.bitwise_and(image, image, mask = mask)
+                # cv2.imshow("images", np.hstack([image, output]))
+                # cv2.waitKey(0)
+                if percentFilled>0.1:
+                    board[x,y] = 3
+
+
+            boundaries = [([0, 40, 0], [80,255,80])]
+            for (lower, upper) in boundaries:
+                lower = np.array(lower, dtype = "uint8")
+                upper = np.array(upper, dtype = "uint8")
+                mask = cv2.inRange(image, lower, upper)
+                (h, w) = mask.shape
+                percentFilled = cv2.countNonZero(mask) / float(w * h)
+               # print(percentFilled)
+                if percentFilled>0.5:
+                    board[x,y] = 4
+            
+            # output = cv2.bitwise_and(image, image, mask = mask)
+            # cv2.imshow("images", np.hstack([image, output]))
+            # cv2.waitKey(0)
+
+
+
 
         # add the row to our cell locations
         cellLocs.append(row)
