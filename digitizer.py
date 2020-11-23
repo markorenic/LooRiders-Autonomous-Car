@@ -174,7 +174,7 @@ def process_image():
                 mask = cv2.inRange(image, lower, upper)
                 (h, w) = mask.shape
                 percentFilled = cv2.countNonZero(mask) / float(w * h)
-                print(percentFilled)
+                #print(percentFilled)
                 # output = cv2.bitwise_and(image, image, mask = mask)
                 # cv2.imshow("images", np.hstack([image, output]))
                 # cv2.waitKey(0)

@@ -230,6 +230,8 @@ def return_the_path_coordinates():
 
 def find_directions(ordered_path_list):
 
+    print(ordered_path_list)
+
     counter = 0
     directions = []
     heading = "east"
@@ -276,7 +278,7 @@ def find_directions(ordered_path_list):
 
         elif heading == "north":
             if(col1 == col2):
-                if(row2-row1 == 1):
+                if(row1-row2 == 1):
                     directions.append("forward")
                     if(ordered_path_list[len(ordered_path_list)-1] == ordered_path_list[counter + 1]):
                         reached_the_end = True
@@ -308,7 +310,7 @@ def find_directions(ordered_path_list):
                     directions.append("right")
                     heading = "west"
 
-
+    print(directions)
     return directions
 
  #  return (directions)
@@ -375,7 +377,7 @@ def find_the_path(board):
     ordered_path_list = reversed_path_list[::-1]
 
     directions = find_directions(ordered_path_list)
-    
+    print(directions)
     return directions
 
     

@@ -4,7 +4,7 @@ def updatePath(instructions):
     message = ""
     for row in file_:
         if ("loop()" not in row):
-            print(row)
+            #print(row)
             message = message + row
         else:
             break
