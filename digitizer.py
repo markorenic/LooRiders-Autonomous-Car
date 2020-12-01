@@ -10,9 +10,7 @@ from queue import PriorityQueue
 
 
 def find_map(image, debug=False):
-    # convert the image to grayscale and blur it slightly
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # apply adaptive thresholding and then invert the threshold map
     blurred = cv2.GaussianBlur(gray, (7, 7), 3)
     thresh = cv2.adaptiveThreshold(
         blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
@@ -20,30 +18,22 @@ def find_map(image, debug=False):
     if debug:
         cv2.imshow("map Thresh", thresh)
         cv2.waitKey(0)
-    # find contours in the thresholded image and sort them by size in descending order
     cnts = cv2.findContours(
         thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
 
-    mapCnt = None  # contours for the map outline
+    mapCnt = None
 
     for c in cnts:  # loop over the contours
-
         peri = cv2.arcLength(c, True)  # approximate the contour
         approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-        # if our approximated contour has four points, then we can
-        # assume we have found the outline of the map
         if len(approx) == 4:
             mapCnt = approx
             break
-    # if the map contour is empty then our script could not find
-    # the outline of the  map so raise an error
     if mapCnt is None:
-        raise Exception(("Could not find  map outline. "
-                         "Try debugging your thresholding and contour steps."))
-    # check to see if we are visualizing the outline of the detected
-    #  map
+        raise Exception(("NO MAP FOUND"))
+    # check to see if we are visualizing the outline of the detected map
     if debug:
         # draw the contour of the map on the image and then display
         # it to our screen for visualization/debugging purposes
@@ -57,7 +47,6 @@ def find_map(image, debug=False):
     map = four_point_transform(image, mapCnt.reshape(4, 2))
     warped = four_point_transform(gray, mapCnt.reshape(4, 2))
     # check to see if we are visualizing the perspective transform
-
     if debug:
         # show the output warped image (again, for debugging purposes)
         cv2.imshow("map Transform", map)
@@ -75,18 +64,17 @@ def is_not_empty(cell, debug=False):
     thresh = clear_border(thresh)
 
     # check to see if we are visualizing the cell thresholding step
-    """if debug:
-		cv2.imshow("Cell Thresh", thresh)
-		cv2.waitKey(0)
-"""
+    # if debug:
+	# 	cv2.imshow("Cell Thresh", thresh)
+	# 	cv2.waitKey(0)
     # find contours in the thresholded cell
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
                             cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
 
-    # if no contours were found than this is an empty cell(black cell)
+    # if no contours were found than this is an empty cell(white cell)
     if not (len(cnts) == 0):
-        # otherwise, find the largest contour in the cell and create a
+        # otherwise, find the  contour in the cell and create a
         # mask for the contour
         c = max(cnts, key=cv2.contourArea)
         mask = np.zeros(thresh.shape, dtype="uint8")
@@ -97,7 +85,7 @@ def is_not_empty(cell, debug=False):
         (h, w) = thresh.shape
         percentFilled = cv2.countNonZero(mask) / float(w * h)
 
-        # if less than 3% of the mask is filled then we are looking at
+        # if less than 2% of the mask is filled then we are looking at
         # noise and can safely ignore the contour
         # it is a black cell
 
@@ -106,7 +94,7 @@ def is_not_empty(cell, debug=False):
 
         cellColor = cv2.bitwise_and(thresh, thresh, mask=mask)
 
-        # check to see if we should visualize the masking step
+        #check to see if we should visualize the masking step
 
         # if debug:
         #     cv2.imshow("Color", cellColor)
@@ -124,12 +112,12 @@ def process_image():
 
     (mapImage, warped) = find_map(image, 1)
 
-    # initialize our 9x9  board
+    # initialize our 6x6  board
     board = np.zeros((6, 6), dtype="int")
 
-    # a  map is a 9x9 grid (81 individual cells), so we can
+    # a  map is a 6x6 grid (36 individual cells), so we can
     # infer the location of each cell by dividing the warped image
-    # into a 9x9 grid
+    # into a 6x6 grid
     stepX = warped.shape[1] // 6
     stepY = warped.shape[0] // 6
 
