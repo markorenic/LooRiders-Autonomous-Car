@@ -1,5 +1,6 @@
 # LooRiders
 LooRider is a two wheel self-driving arduino car which finds the shortest path from its intial position to its destination on a changeable map with the help of a camera which uses computer vision and object detection to interpret the scene from a birdseye view.
+Demo: https://youtu.be/0-YDLYPRc_w?t=248
 
 # What is LooRider
  LooRider is a two wheel self-driving arduino car which finds the shortest path from its intial position to its destination on a changeable map.
